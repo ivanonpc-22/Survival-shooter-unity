@@ -24,9 +24,6 @@ public class EnemyManager : MonoBehaviour
 
         if(save.enemy == enemy.name)
         {
-            Debug.LogError("saved " + save.enemy + " " + enemy.name);
-
-
             GameObject obj = Instantiate(enemy);
             obj.transform.position = save.position;
             obj.GetComponent<EnemyHealth>().Load(save);
