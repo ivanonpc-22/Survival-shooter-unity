@@ -60,7 +60,7 @@ public class PlayerHealth : MonoBehaviour
 
         if(currentHealth <= 0 && !isDead)
         {
-            //GameStateManager.Instance.UpdateState(GAME_STATE.GAME_OVER);
+            GameStateManager.Instance.UpdateState(GAME_STATE.GAME_OVER);
             Death ();
         }
     }
@@ -68,6 +68,9 @@ public class PlayerHealth : MonoBehaviour
 
     void Death ()
     {
+        if (ActionManager.GameplayActions.PlayerDeath != null)
+            ActionManager.GameplayActions.PlayerDeath();
+
         isDead = true;
 
         playerShooting.DisableEffects ();

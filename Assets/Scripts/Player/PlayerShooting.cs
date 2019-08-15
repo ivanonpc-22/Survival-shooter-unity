@@ -56,6 +56,9 @@ public class PlayerShooting : MonoBehaviour
 
     void Shoot ()
     {
+        if (ActionManager.GameplayActions.BulletsFired != null)
+            ActionManager.GameplayActions.BulletsFired();
+
         timer = 0f;
 
         gunAudio.Play ();

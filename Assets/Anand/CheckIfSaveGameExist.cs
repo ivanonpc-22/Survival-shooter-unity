@@ -7,7 +7,7 @@ public class CheckIfSaveGameExist : MonoBehaviour
 
     private void Awake()
     {
-        if (Utils.ReadTextFromFile(GameSaveManager.SAVE_FILE_NAME) != null)
+        if (!string.IsNullOrEmpty(Utils.ReadTextFromFile(GameSaveManager.SAVE_FILE_NAME)))
             gameObject.SetActive(true);
         else
             gameObject.SetActive(false);

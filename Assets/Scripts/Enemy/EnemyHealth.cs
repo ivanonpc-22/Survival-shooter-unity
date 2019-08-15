@@ -61,6 +61,9 @@ public class EnemyHealth : MonoBehaviour
 
     void Death ()
     {
+        if (ActionManager.GameplayActions.EnemyKilled != null)
+            ActionManager.GameplayActions.EnemyKilled();
+
         isDead = true;
 
         capsuleCollider.isTrigger = true;
@@ -78,6 +81,10 @@ public class EnemyHealth : MonoBehaviour
         GetComponent <Rigidbody> ().isKinematic = true;
         isSinking = true;
         ScoreManager.score += scoreValue;
+
+        if (ActionManager.GameplayActions.ScoreUpdate != null)
+            ActionManager.GameplayActions.ScoreUpdate();
+
         Destroy (gameObject, 2f);
     }
 

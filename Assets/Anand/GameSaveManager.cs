@@ -113,7 +113,7 @@ public class GameSaveManager : MonoBehaviour
     {
         string savedJs = Utils.ReadTextFromFile(SAVE_FILE_NAME);
 
-        if (savedJs != null)
+        if (!string.IsNullOrEmpty(savedJs))
         {
             GameSaveModel gameSave = Utils.DeserializeObject<GameSaveModel>(savedJs);
 
