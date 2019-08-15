@@ -14,6 +14,9 @@ public class EnemyAttack : MonoBehaviour
     bool playerInRange;
     float timer;
 
+    //Items To Save
+    //timer
+
 
     void Awake ()
     {

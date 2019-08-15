@@ -7,10 +7,22 @@ public class EnemyManager : MonoBehaviour
     public float spawnTime = 3f;
     public Transform[] spawnPoints;
 
-
-    void Start ()
+    private void OnEnable()
     {
-        InvokeRepeating ("Spawn", spawnTime, spawnTime);
+        ActionManager.GameStateActions.GameStateChange += OnGameStateChanged;
+    }
+
+    private void OnDisable()
+    {
+        ActionManager.GameStateActions.GameStateChange -= OnGameStateChanged;
+    }
+
+    private void OnGameStateChanged(GAME_STATE newState)
+    {
+        if (newState == GAME_STATE.GAME)
+            InvokeRepeating("Spawn", spawnTime, spawnTime);
+        else if (newState == GAME_STATE.GAME_OVER)
+            CancelInvoke("Spawn");
     }
 
 

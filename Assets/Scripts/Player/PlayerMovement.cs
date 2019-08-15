@@ -21,7 +21,10 @@ public class PlayerMovement : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		float h = Input.GetAxisRaw ("Horizontal");
+        if (GameStateManager.Instance.CurrentGameState != GAME_STATE.GAME)
+            return;
+
+        float h = Input.GetAxisRaw ("Horizontal");
 		float v = Input.GetAxisRaw ("Vertical");
 
 		Move(h, v);

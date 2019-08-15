@@ -8,6 +8,8 @@ public class EnemyMovement : MonoBehaviour
     EnemyHealth enemyHealth;
     UnityEngine.AI.NavMeshAgent nav;
 
+    //Items To Save
+    //transform
 
     void Awake ()
     {

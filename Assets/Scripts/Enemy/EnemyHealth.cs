@@ -17,6 +17,9 @@ public class EnemyHealth : MonoBehaviour
 
     public int CurrentHealth { get { return currentHealth; } }
 
+    //Items To Save
+    //currentHealth
+
     void Awake ()
     {
         anim = GetComponent <Animator> ();

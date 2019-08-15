@@ -30,6 +30,9 @@ public class PlayerShooting : MonoBehaviour
 
     void Update ()
     {
+        if (GameStateManager.Instance.CurrentGameState != GAME_STATE.GAME)
+            return;
+
         timer += Time.deltaTime;
 
 		if(Input.GetButton ("Fire1") && timer >= timeBetweenBullets && Time.timeScale != 0)
