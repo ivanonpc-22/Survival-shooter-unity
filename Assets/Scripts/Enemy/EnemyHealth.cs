@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Newtonsoft.Json;
 
 public class EnemyHealth : MonoBehaviour
 {
@@ -11,7 +12,7 @@ public class EnemyHealth : MonoBehaviour
     AudioSource enemyAudio;
     ParticleSystem hitParticles;
     CapsuleCollider capsuleCollider;
-    bool isDead;
+    public bool isDead { get; private set; }
     bool isSinking;
     int currentHealth;
 
@@ -78,5 +79,10 @@ public class EnemyHealth : MonoBehaviour
         isSinking = true;
         ScoreManager.score += scoreValue;
         Destroy (gameObject, 2f);
+    }
+
+    public void Load(EnemySaveState save)
+    {
+        currentHealth = save.health;
     }
 }

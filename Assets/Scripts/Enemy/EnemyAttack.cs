@@ -6,13 +6,14 @@ public class EnemyAttack : MonoBehaviour
     public float timeBetweenAttacks = 0.5f;
     public int attackDamage = 10;
 
+    public string enemyType;
 
     Animator anim;
     GameObject player;
     PlayerHealth playerHealth;
     EnemyHealth enemyHealth;
     bool playerInRange;
-    float timer;
+    public float timer { get; private set; }
 
     //Items To Save
     //timer
@@ -69,5 +70,10 @@ public class EnemyAttack : MonoBehaviour
         {
             playerHealth.TakeDamage (attackDamage);
         }
+    }
+
+    public void Load(EnemySaveState save)
+    {
+        timer = save.timer;
     }
 }

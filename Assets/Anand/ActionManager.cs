@@ -7,4 +7,9 @@ public class ActionManager
         public static Action<GAME_STATE> GameStateChange; 
     }
 
+    public class GameLoadActions
+    {
+        public static Action<EnemySaveState> EnemySpawn;
+    }
+
 }
