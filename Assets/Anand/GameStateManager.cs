@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,13 +19,22 @@ public class GameStateManager : MonoBehaviour
     {
         if(Instance != null)
         {
+            UpdateRefs();
+
             DestroyImmediate(this.gameObject);
+            return;
         }
 
         DontDestroyOnLoad(this.gameObject);
 
         Instance = this;
         UpdateState(GAME_STATE.MAIN_MENU);
+    }
+
+    private void UpdateRefs()
+    {
+        Instance.MainMenuUIObject = MainMenuUIObject;
+        Instance.InGameUIObject = InGameUIObject;
     }
 
     public void UpdateState(GAME_STATE newState)
@@ -34,6 +44,9 @@ public class GameStateManager : MonoBehaviour
             CurrentGameState = newState;
 
             ToggleObjectsOnStateSwitch();
+
+            if (ActionManager.GameStateActions.GameStateChange != null)
+                ActionManager.GameStateActions.GameStateChange(newState);
         }
         else
             Debug.LogError("Setting the state to same value");
@@ -51,6 +64,11 @@ public class GameStateManager : MonoBehaviour
 
             case GAME_STATE.MAIN_MENU:
                 MainMenuUIObject.SetActive(true);
+                InGameUIObject.SetActive(false);
+                break;
+
+            case GAME_STATE.LOAD_GAME:
+                MainMenuUIObject.SetActive(false);
                 InGameUIObject.SetActive(false);
                 break;
         }
