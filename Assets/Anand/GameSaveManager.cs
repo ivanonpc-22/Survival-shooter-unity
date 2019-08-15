@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 
 public class GameSaveManager : MonoBehaviour
 {
+    public const string SAVE_FILE_NAME = "/gamesave";
+
     static GameSaveManager Instance;
 
     private void Awake()
@@ -35,13 +37,13 @@ public class GameSaveManager : MonoBehaviour
     {
         if(state == GAME_STATE.LOAD_GAME)
         {
-            QuickLoadGame();
+            LoadGame();
 
-            Invoke("LoadGame",0.1f);
+            Invoke("UpdateGameState", 0.1f);
         }
     }
 
-    void LoadGame()
+    void UpdateGameState()
     {
         GameStateManager.Instance.UpdateState(GAME_STATE.GAME);
     }
@@ -55,50 +57,27 @@ public class GameSaveManager : MonoBehaviour
             {
                 QuickSaveGame();
             }
-            else if (Input.GetKeyDown(KeyCode.L))
-            {
-                QuickLoadGame();
-            }
         }
     }
 
-    private void QuickLoadGame()
-    {
-        string filePath = Application.persistentDataPath + STATIC_DATA_FILE_NAME;
-
-        string savedData = null;
-        if (File.Exists(filePath))
-        {
-            savedData = File.ReadAllText(filePath);
-
-            GameSaveState gameSave = JsonConvert.DeserializeObject<GameSaveState>(savedData);
-
-            for (int i = 0; i < gameSave.enemiesSave.Count; i++)
-            {
-                if(ActionManager.GameLoadActions.EnemySpawn != null)
-                    ActionManager.GameLoadActions.EnemySpawn(gameSave.enemiesSave[i]);
-            }
-
-            GameObject player = GameObject.FindGameObjectWithTag("Player");
-            player.transform.position = gameSave.playerSave.position;
-            player.GetComponent<PlayerHealth>().Load(gameSave.playerSave);
-        }
-    }
-
-    public const string STATIC_DATA_FILE_NAME = "/chfsk";
 
     private void QuickSaveGame()
     {
-        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
-        List<EnemySaveState> enemiesSavedState = new List<EnemySaveState>();
-        PlayerSaveState playerSaveState = new PlayerSaveState();
+        GameSaveModel save = SaveGameState();
+        string serialized = Utils.SerializeObject(save);
+        Utils.WriteTextToFile(SAVE_FILE_NAME, serialized);
+    }
 
+    List<EnemySaveModel> SaveEnemyState()
+    {
+        GameObject[] enemies = GameObject.FindGameObjectsWithTag("Enemy");
+        List<EnemySaveModel> enemiesSavedState = new List<EnemySaveModel>();
 
         for (int i = 0; i < enemies.Length; i++)
         {
-            if(!enemies[i].GetComponent<EnemyHealth>().isDead)
+            if (!enemies[i].GetComponent<EnemyHealth>().isDead)
             {
-                EnemySaveState state = new EnemySaveState();
+                EnemySaveModel state = new EnemySaveModel();
                 state.position = enemies[i].transform.position;
                 state.health = enemies[i].GetComponent<EnemyHealth>().CurrentHealth;
                 state.timer = enemies[i].GetComponent<EnemyAttack>().timer;
@@ -107,42 +86,57 @@ public class GameSaveManager : MonoBehaviour
             }
         }
 
+        return enemiesSavedState;
+    }
+
+    PlayerSaveModel SavePlayerState()
+    {
+        PlayerSaveModel playerSaveState = new PlayerSaveModel();
         GameObject player = GameObject.FindGameObjectWithTag("Player");
         playerSaveState.position = player.transform.position;
         playerSaveState.score = ScoreManager.score;
         playerSaveState.health = player.GetComponent<PlayerHealth>().CurrentHealth;
 
-        GameSaveState gameSave = new GameSaveState();
-        gameSave.enemiesSave = enemiesSavedState;
-        gameSave.playerSave = playerSaveState;
-
-        string str = JsonConvert.SerializeObject(gameSave);
-
-        string filePath = Application.persistentDataPath + STATIC_DATA_FILE_NAME;
-        System.IO.File.WriteAllText(filePath, str);
-
-        Debug.LogError("saved string " + str);
-
+        return playerSaveState;
     }
-}
 
-public struct PlayerSaveState
-{
-    public Vector3 position;
-    public int health;
-    public int score;
-}
+    GameSaveModel SaveGameState()
+    {
+        GameSaveModel gameSave = new GameSaveModel();
+        gameSave.enemiesSave = SaveEnemyState();
+        gameSave.playerSave = SavePlayerState();
 
-public struct EnemySaveState
-{
-    public string enemy;
-    public Vector3 position;
-    public int health;
-    public float timer;
-}
+        return gameSave;
+    }
 
-public struct GameSaveState
-{
-    public PlayerSaveState playerSave;
-    public List<EnemySaveState> enemiesSave;
+    private void LoadGame()
+    {
+        string savedJs = Utils.ReadTextFromFile(SAVE_FILE_NAME);
+
+        if (savedJs != null)
+        {
+            GameSaveModel gameSave = Utils.DeserializeObject<GameSaveModel>(savedJs);
+
+            LoadEnemies(gameSave.enemiesSave);
+            LoadPlayer(gameSave.playerSave);
+        }
+    }
+
+    void LoadEnemies(List<EnemySaveModel> enemiesSaveData)
+    {
+        for (int i = 0; i < enemiesSaveData.Count; i++)
+        {
+            if (ActionManager.GameLoadActions.EnemySpawn != null)
+                ActionManager.GameLoadActions.EnemySpawn(enemiesSaveData[i]);
+        }
+    }
+
+    void LoadPlayer(PlayerSaveModel playerSaveData)
+    {
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        player.transform.position = playerSaveData.position;
+        player.GetComponent<PlayerHealth>().Load(playerSaveData);
+    }
+
+
 }

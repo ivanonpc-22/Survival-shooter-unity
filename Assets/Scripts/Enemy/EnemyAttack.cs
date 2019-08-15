@@ -72,7 +72,7 @@ public class EnemyAttack : MonoBehaviour
         }
     }
 
-    public void Load(EnemySaveState save)
+    public void Load(EnemySaveModel save)
     {
         timer = save.timer;
     }

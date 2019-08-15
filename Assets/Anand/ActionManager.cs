@@ -9,7 +9,7 @@ public class ActionManager
 
     public class GameLoadActions
     {
-        public static Action<EnemySaveState> EnemySpawn;
+        public static Action<EnemySaveModel> EnemySpawn;
     }
 
 }

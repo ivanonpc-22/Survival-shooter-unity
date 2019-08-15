@@ -60,6 +60,7 @@ public class PlayerHealth : MonoBehaviour
 
         if(currentHealth <= 0 && !isDead)
         {
+            //GameStateManager.Instance.UpdateState(GAME_STATE.GAME_OVER);
             Death ();
         }
     }
@@ -87,7 +88,7 @@ public class PlayerHealth : MonoBehaviour
         SceneManager.LoadScene (0);
     }
 
-    public void Load(PlayerSaveState save)
+    public void Load(PlayerSaveModel save)
     {
         currentHealth = save.health;
         ScoreManager.score = save.score;

@@ -81,7 +81,7 @@ public class EnemyHealth : MonoBehaviour
         Destroy (gameObject, 2f);
     }
 
-    public void Load(EnemySaveState save)
+    public void Load(EnemySaveModel save)
     {
         currentHealth = save.health;
     }
