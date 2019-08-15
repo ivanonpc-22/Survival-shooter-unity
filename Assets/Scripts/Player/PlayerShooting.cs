@@ -7,7 +7,7 @@ public class PlayerShooting : MonoBehaviour
     public float range = 100f;
 
 
-    float timer;
+    public float timer { get; private set; }
     Ray shootRay = new Ray();
     RaycastHit shootHit;
     int shootableMask;

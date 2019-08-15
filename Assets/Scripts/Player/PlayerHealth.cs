@@ -83,6 +83,15 @@ public class PlayerHealth : MonoBehaviour
 
     public void RestartLevel ()
     {
+        GameStateManager.Instance.UpdateState(GAME_STATE.MAIN_MENU);
         SceneManager.LoadScene (0);
+    }
+
+    public void Load(PlayerSaveState save)
+    {
+        currentHealth = save.health;
+        ScoreManager.score = save.score;
+
+        healthSlider.value = currentHealth;
     }
 }
